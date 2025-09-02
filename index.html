@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>[CONCEPT] Gamedeck Store</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Scrollbar stylée pour dark mode */
+    ::-webkit-scrollbar {
+      width: 8px;
+      background: #18181b;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #3f3f46;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen font-sans">
+  <div class="max-w-5xl mx-auto p-4">
+    <!-- Header -->
+    <header class="flex flex-col md:flex-row md:items-center justify-between mb-6">
+      <h1 class="text-3xl font-bold text-green-400 mb-2 md:mb-0">Gamedeck Store <span class="text-xs text-gray-400">Concept and project</span></h1>
+      <form id="searchForm" class="flex items-center gap-2">
+        <input id="searchInput" type="text" placeholder="Rechercher un jeu..." class="rounded px-4 py-2 bg-gray-800 text-gray-100 focus:outline-none" />
+        <button type="submit" class="bg-green-500 hover:bg-green-600 px-3 py-2 rounded font-semibold">Search</button>
+      </form>
+    </header>
+
+    <!-- Filtres -->
+    <div class="flex flex-wrap gap-4 mb-6">
+      <select id="catFilter" class="bg-gray-800 p-2 rounded text-gray-100">
+        <option value="">Toutes catégories</option>
+        <option value="Action">Action</option>
+        <option value="Stratégie">Stratégie</option>
+        <option value="Puzzle">Puzzle</option>
+        <option value="Course">Course</option>
+        <option value="Aventure">Aventure</option>
+      </select>
+      <select id="osFilter" class="bg-gray-800 p-2 rounded text-gray-100">
+        <option value="">Toutes plateformes</option>
+        <option value="Android 8+">Android 8+</option>
+        <option value="Android 10+">Android 10+</option>
+        <option value="Android 12+">Android 12+</option>
+      </select>
+    </div>
+
+    <!-- Liste de jeux -->
+    <div id="gamesGrid" class="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+      <!-- Les cartes de jeux seront injectées ici -->
+    </div>
+  </div>
+
+  <script>
+    // Exemple de base de données de jeux (à étendre)
+    const games = [
+      {
+        title: "Among Us",
+        image: "https://play-lh.googleusercontent.com/3K9Q3iZtLw4s9yV5v0FZQxw9QvK2oKxsy6k3cQSo3Tkyw2x2Kq0Fz2K6Ow5V0zQkJg=w240-h480-rw",
+        category: "Stratégie",
+        os: "Android 8+",
+        link: "https://play.google.com/store/apps/details?id=com.innersloth.spacemafia",
+        official: true
+      },
+      {
+        title: "Asphalt 9: Legends",
+        image: "https://play-lh.googleusercontent.com/xlVZVJQX7N4Yx2sYJ1Z4Z5b2R4t4k4A4f8S2H1V2d1K8K4E4A4G2E4F4S2H5E4A4=w240-h480-rw",
+        category: "Course",
+        os: "Android 10+",
+        link: "https://play.google.com/store/apps/details?id=com.gameloft.android.ANMP.GloftA9HM",
+        official: true
+      },
+      {
+        title: "Monument Valley",
+        image: "https://play-lh.googleusercontent.com/0A-5N8y-0h2v2yZ5C5L8Z4q2E2s5K4E4T8S2H1V2d1K8K4E4A4G2E4F4S2H5E4A4=w240-h480-rw",
+        category: "Puzzle",
+        os: "Android 10+",
+        link: "https://play.google.com/store/apps/details?id=com.ustwo.monumentvalley",
+        official: true
+      },
+      {
+        title: "Genshin Impact",
+        image: "https://play-lh.googleusercontent.com/6bVnM1z4wgi4YpA4oQ4U1bYf7Jx1zL0oD8L1zH1qK8wJ7R4G2D4F4S2H5E4A4=w240-h480-rw",
+        category: "Aventure",
+        os: "Android 8+",
+        link: "https://play.google.com/store/apps/details?id=com.miHoYo.GenshinImpact",
+        official: true
+      },
+      {
+        title: "PUBG Mobile",
+        image: "https://play-lh.googleusercontent.com/IuJ9-1rQn7L4Y8tV1zV5b2R4t4k4A4f8S2H1V2d1K8K4E4A4G2E4F4S2H5E4A4=w240-h480-rw",
+        category: "Action",
+        os: "Android 10+",
+        link: "https://play.google.com/store/apps/details?id=com.tencent.ig",
+        official: true
+      },
+      {
+        title: "Stardew Valley",
+        image: "https://play-lh.googleusercontent.com/tv2VvYQW8h7yN8kH1V2d1K8K4E4A4G2E4F4S2H5E4A4=w240-h480-rw",
+        category: "Stratégie",
+        os: "Android 10+",
+        link: "https://play.google.com/store/apps/details?id=com.chucklefish.stardewvalley",
+        official: true
+      }
+    ];
+
+    const gamesGrid = document.getElementById('gamesGrid');
+    const searchInput = document.getElementById('searchInput');
+    const searchForm = document.getElementById('searchForm');
+    const catFilter = document.getElementById('catFilter');
+    const osFilter = document.getElementById('osFilter');
+
+    function renderGames(list) {
+      gamesGrid.innerHTML = '';
+      if (!list.length) {
+        gamesGrid.innerHTML = '<div class="col-span-full text-center text-gray-400">Aucun jeu trouvé.</div>';
+        return;
+      }
+      for (const game of list) {
+        gamesGrid.innerHTML += `
+          <div class="bg-gray-800 rounded-lg shadow-lg flex flex-col overflow-hidden hover:shadow-green-600 transition-shadow border border-gray-700">
+            <img src="${game.image}" alt="Image ${game.title}" class="h-44 object-cover w-full"/>
+            <div class="p-4 flex-1 flex flex-col justify-between">
+              <div>
+                <h2 class="text-xl font-semibold text-green-300">${game.title}</h2>
+                <div class="mt-1 flex flex-wrap gap-2 text-xs text-gray-400">
+                  <span class="inline-block bg-gray-700 px-2 py-1 rounded">${game.category}</span>
+                  <span class="inline-block bg-gray-700 px-2 py-1 rounded">${game.os}</span>
+                </div>
+              </div>
+              <a href="${game.link}" target="_blank" rel="noopener noreferrer"
+                 class="mt-4 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded font-semibold text-center block transition-colors"
+                 title="Lien officiel, Play Store ou site de l'éditeur">Télécharger</a>
+              <span class="text-xs mt-2 text-gray-500">${game.official ? "Lien officiel sécurisé" : "Lien vérifié"}</span>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    function filterGames() {
+      const search = searchInput.value.trim().toLowerCase();
+      const cat = catFilter.value;
+      const os = osFilter.value;
+      return games.filter(game => {
+        const matchesSearch = !search || game.title.toLowerCase().includes(search);
+        const matchesCat = !cat || game.category === cat;
+        const matchesOs = !os || game.os === os;
+        return matchesSearch && matchesCat && matchesOs;
+      });
+    }
+
+    // Gère la recherche et les filtres
+    function updateDisplay() {
+      renderGames(filterGames());
+    }
+
+    searchForm.addEventListener('submit', e => {
+      e.preventDefault();
+      updateDisplay();
+    });
+    catFilter.addEventListener('change', updateDisplay);
+    osFilter.addEventListener('change', updateDisplay);
+
+    // Initialisation
+    renderGames(games);
+  </script>
+</body>
+    </html>
