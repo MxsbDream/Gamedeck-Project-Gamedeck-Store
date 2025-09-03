@@ -23,7 +23,7 @@
     <header class="flex flex-col md:flex-row md:items-center justify-between mb-6">
       <h1 class="text-3xl font-bold text-green-400 mb-2 md:mb-0">Gamedeck Store <span class="text-xs text-gray-400">Concept and project</span></h1>
       <form id="searchForm" class="flex items-center gap-2">
-        <input id="searchInput" type="text" placeholder="Rechercher un jeu..." class="rounded px-4 py-2 bg-gray-800 text-gray-100 focus:outline-none" />
+        <input id="searchInput" type="text" placeholder="Search for a game..." class="rounded px-4 py-2 bg-gray-800 text-gray-100 focus:outline-none" />
         <button type="submit" class="bg-green-500 hover:bg-green-600 px-3 py-2 rounded font-semibold">Search</button>
       </form>
     </header>
@@ -31,15 +31,17 @@
     <!-- Filtres -->
     <div class="flex flex-wrap gap-4 mb-6">
       <select id="catFilter" class="bg-gray-800 p-2 rounded text-gray-100">
-        <option value="">Toutes catégories</option>
+        <option value="">All Categories</option>
         <option value="Action">Action</option>
-        <option value="Stratégie">Stratégie</option>
+        <option value="Stratégie">Strategy</option>
         <option value="Puzzle">Puzzle</option>
-        <option value="Course">Course</option>
-        <option value="Aventure">Aventure</option>
+        <option value="Course">Race</option>
+        <option value="Aventure">Adventure</option>
+        <option value="Retro">Retro</option>
+        <option value="Emulator">Emulator</option>
       </select>
       <select id="osFilter" class="bg-gray-800 p-2 rounded text-gray-100">
-        <option value="">Toutes plateformes</option>
+        <option value="">All platforms</option>
         <option value="Android 8+">Android 8+</option>
         <option value="Android 10+">Android 10+</option>
         <option value="Android 12+">Android 12+</option>
@@ -103,6 +105,14 @@
         link: "https://play.google.com/store/apps/details?id=com.chucklefish.stardewvalley",
         official: true
       }
+      {
+        title: "RetroArch",
+        image: "https://play-lh.googleusercontent.com/xlVZVJQX7N4Yx2sYJ1Z4Z5b2R4t4k4A4f8S2H1V2d1K8K4E4A4G2E4F4S2H5E4A4=w240-h480-rw",
+        category: "Retro", "Emulator",
+        os: "Android 10+",
+        link: "https://play.google.com/store/apps/details?id=com.gameloft.android.ANMP.GloftA9HM",
+        official: true
+      },
     ];
 
     const gamesGrid = document.getElementById('gamesGrid');
@@ -131,8 +141,8 @@
               </div>
               <a href="${game.link}" target="_blank" rel="noopener noreferrer"
                  class="mt-4 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded font-semibold text-center block transition-colors"
-                 title="Lien officiel, Play Store ou site de l'éditeur">Télécharger</a>
-              <span class="text-xs mt-2 text-gray-500">${game.official ? "Lien officiel sécurisé" : "Lien vérifié"}</span>
+                 title="">Download</a>
+              <span class="text-xs mt-2 text-gray-500">${game.official ? "" : ""}</span>
             </div>
           </div>
         `;
